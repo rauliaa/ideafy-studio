@@ -1,11 +1,14 @@
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}", // pastikan ini sesuai dengan struktur project
+    "./app/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        background: '#F5F5F5', // ganti dengan warna yang kamu inginkan
+        primary: "#1B3C53",
+        secondary: "#456882",
+        neutral: "#D2C1B6",
+        background: "#F9F3EF",
       },
     },
   },

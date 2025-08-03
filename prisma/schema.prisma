@@ -30,14 +30,15 @@ model Service {
 }
 
 model Order {
-  id         String   @id @default(cuid())
-  user       User     @relation(fields: [userId], references: [id])
+  id         String   @id @default(uuid())
   userId     String
-  service    Service  @relation(fields: [serviceId], references: [id])
   serviceId  String
   brief      String
-  status     Status   @default(PENDING)
+  status     String   @default("menunggu") // status: menunggu, diproses, selesai
   createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  service    Service  @relation(fields: [serviceId], references: [id])
 }
 
 enum Role {

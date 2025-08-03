@@ -1,27 +1,27 @@
-'use client'
+"use client"
 
-import { signIn } from 'next-auth/react'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { signIn } from "next-auth/react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    const res = await signIn('credentials', {
+    const res = await signIn("credentials", {
       email,
       password,
       redirect: false,
     })
 
     if (res?.error) {
-      setError('Email atau password salah')
+      setError("Email atau password salah")
     } else {
-      router.push('/dashboard')
+      router.push("/dashboard")
     }
   }
 
@@ -29,7 +29,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center p-4">
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-4">Login</h1>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
+        {error && <p suppressHydrationWarning className="text-red-500 mb-2">{error}</p>}
         <input
           type="email"
           placeholder="Email"
