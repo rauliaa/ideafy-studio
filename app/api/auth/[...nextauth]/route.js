@@ -1,9 +1,7 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/lib/prisma";
-import { compare } from "bcrypt";
+import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -12,55 +10,35 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // lakukan validasi di sini, contoh:
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
-        });
+        })
 
-        if (!user) {
-          throw new Error("Email tidak ditemukan");
+        if (user && user.password === credentials.password) {
+          return user
         }
-
-        const isPasswordCorrect = await compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordCorrect) {
-          throw new Error("Password salah");
-        }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role, // <-- INI dia!
-        };
+        return null
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
-  },
   callbacks: {
     async session({ session, token }) {
-      session.user.id = token.id;  
-      session.user.role = token.role;
-      return session;
+      if (token) {
+        session.user.id = token.id
+        session.user.role = token.role
+      }
+      return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;  
-        token.role = user.role;
+        token.id = user.id
+        token.role = user.role
       }
-      return token;
+      return token
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+})
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }
